@@ -194,10 +194,10 @@ def generar_juegos(pesos_main, pesos_adic, n_juegos=100, semillas=5):
         juegos.add(combinacion)
 
     # Número adicional: muestreo ponderado por prob del modelo
-    juegos_lista = [list(c) for c in juegos]
+    juegos_lista = [[int(n) for n in c] for c in juegos]
     adics = np.random.choice(adicionales, size=n_juegos, p=pesos_adic)
 
-    return juegos_lista, adics.tolist()
+    return juegos_lista, [int(a) for a in adics]
 
 
 juegos, adics = generar_juegos(pesos, prob_adic)
