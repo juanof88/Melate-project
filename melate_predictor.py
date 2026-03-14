@@ -28,7 +28,7 @@ def cargar_datos():
         print("Modo local: leyendo melate.csv")
         df = pd.read_csv("melate.csv")
 
-    columnas = ["N1", "N2", "N3", "N4", "N5", "N6", "Adicional"]
+    columnas = ["F1", "F2", "F3", "F4", "F5", "F6", "F7"]
     if not all(c in df.columns for c in columnas):
         raise ValueError(f"El CSV debe tener las columnas: {columnas}")
     return df[columnas].dropna().reset_index(drop=True)
@@ -41,7 +41,7 @@ def datos_ejemplo():
         nums = sorted(np.random.choice(range(1, 40), 6, replace=False))
         adicional = np.random.randint(1, 11)
         rows.append(nums + [adicional])
-    return pd.DataFrame(rows, columns=["N1","N2","N3","N4","N5","N6","Adicional"])
+    return pd.DataFrame(rows, columns=["F1","F2","F3","F4","F5","F6","F7"])
 
 
 try:
@@ -55,11 +55,11 @@ except Exception as e:
 # Cada sorteo → vector binario de 39 bits (1 = número salió) + 10 bits adicional
 def sorteo_a_vector(row):
     v_main = np.zeros(N_NUMS, dtype=np.float32)
-    for col in ["N1","N2","N3","N4","N5","N6"]:
+    for col in ["F1","F2","F3","F4","F5","F6"]:
         v_main[int(row[col]) - 1] = 1.0
 
     v_adic = np.zeros(N_ADICIONAL, dtype=np.float32)
-    v_adic[int(row["Adicional"]) - 1] = 1.0
+    v_adic[int(row["F7"]) - 1] = 1.0
 
     return np.concatenate([v_main, v_adic])   # tamaño 49
 
@@ -219,8 +219,8 @@ for i, (juego, adic) in enumerate(zip(juegos, adics), 1):
     print(f"  {i:3}. {juego}  +  [{adic}]")
 
 # ── Exportar a CSV ────────────────────────────────────────────────────────────
-df_juegos = pd.DataFrame(juegos, columns=["N1","N2","N3","N4","N5","N6"])
-df_juegos["Adicional"] = adics
+df_juegos = pd.DataFrame(juegos, columns=["F1","F2","F3","F4","F5","F6"])
+df_juegos["F7"] = adics
 df_juegos.index = range(1, N_JUEGOS + 1)
 df_juegos.to_csv("mis_100_juegos.csv")
 print("\nArchivo guardado: mis_100_juegos.csv")
